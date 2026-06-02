@@ -2,12 +2,10 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the pom.xml and download dependencies (caches them)
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
+# Copy everything from your backend folder directly into the container
+COPY . .
 
-# Copy the source code and package the app
-COPY src ./src
+# Package the application while skipping tests to speed up deployment
 RUN mvn clean package -DskipTests
 
 # Stage 2: Run the application
@@ -17,7 +15,7 @@ WORKDIR /app
 # Copy the built .jar file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port your app runs on (Render defaults to 10000, or your app's port like 8080)
+# Expose the port (Render will automatically bind to its internal port)
 EXPOSE 8080
 
 # Command to run the application
