@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -39,6 +40,11 @@ public class GeminiService {
      * Supports multi-turn conversations via the contents array.
      */
     public String generateResponse(String systemPrompt, List<Message> history, String userMessage) {
+        if (!StringUtils.hasText(apiKey)) {
+            log.error("Gemini API key is not configured. Please set GEMINI_API_KEY.");
+            return "Gemini API key is not configured. Please set GEMINI_API_KEY and restart the backend.";
+        }
+
         List<Map<String, Object>> contents = new ArrayList<>();
 
         // Append prior turns (already stored as user/model pairs)
@@ -62,7 +68,7 @@ public class GeminiService {
                 "contents", contents,
                 "generationConfig", Map.of(
                         "temperature", 0.7,
-                        "maxOutputTokens", 1024,
+                        "maxOutputTokens", 4096,
                         "topP", 0.9
                 )
         );
@@ -88,11 +94,11 @@ public class GeminiService {
             return extractText(response);
 
         } catch (WebClientResponseException e) {
-            log.error("Gemini API HTTP error {}: {}", e.getStatusCode(), e.getResponseBodyAsString());
-            return "I encountered an error communicating with the AI service. Please try again.";
+            log.error("Gemini API HTTP error {}: {}", e.getStatusCode(), e.getResponseBodyAsString(), e);
+            return "I encountered an error communicating with the AI service. Please check the backend logs for the Gemini API response.";
         } catch (Exception e) {
-            log.error("Gemini API call failed: {}", e.getMessage());
-            return e.getMessage().contains("Rate limit")
+            log.error("Gemini API call failed", e);
+            return e.getMessage() != null && e.getMessage().contains("Rate limit")
                     ? e.getMessage()
                     : "I'm unable to respond right now. Please try again in a moment.";
         }

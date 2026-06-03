@@ -11,8 +11,9 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedOrigins(
-                        "http://localhost:3000",  // React dev server
-                        "http://localhost:5173"   // Vite dev server (if used)
+                        "http://localhost:3000",
+                        "http://localhost:5173",
+                        "https://gen-ai-chat-3egmg3tyf-iiitavibes-3843s-projects.vercel.app"
                 )
                 .allowedMethods("GET", "POST", "DELETE", "OPTIONS")
                 .allowedHeaders("*")

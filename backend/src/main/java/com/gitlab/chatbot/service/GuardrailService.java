@@ -16,10 +16,14 @@ import java.util.List;
 public class GuardrailService {
 
     private static final List<String> GITLAB_KEYWORDS = Arrays.asList(
-            "gitlab", "handbook", "values", "engineering", "product", "remote",
-            "communication", "company", "policy", "pto", "vacation", "salary",
-            "benefit", "onboarding", "career", "promotion", "interview"
-    );
+    "gitlab", "handbook", "values", "engineering", "product", "remote",
+    "communication", "company", "policy", "pto", "vacation", "salary",
+    "benefit", "onboarding", "career", "promotion", "interview",
+    // ADD THESE:
+    "leave", "time off", "work", "team", "manager", "employee",
+    "process", "review", "meeting", "project", "deploy", "merge",
+    "issue", "milestone", "sprint", "okr", "goal", "feedback"
+);
 
     private static final List<String> SENSITIVE_PATTERNS = Arrays.asList(
             "password", "api key", "secret", "token", "credential",

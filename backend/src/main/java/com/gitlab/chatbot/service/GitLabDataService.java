@@ -62,7 +62,7 @@ public class GitLabDataService {
 
                 String text = contentEl.text();
                 // Limit per page to keep context manageable
-                if (text.length() > 6000) text = text.substring(0, 6000);
+                if (text.length() > 12000) text = text.substring(0, 12000);
 
                 pageCache.put(url, text);
                 loaded++;
@@ -98,7 +98,7 @@ public class GitLabDataService {
             String lowerContent = entry.getValue().toLowerCase();
             int score = 0;
             for (String keyword : keywords) {
-                if (keyword.length() > 3) {
+                if (keyword.length() > 2) {
                     int idx = 0;
                     while ((idx = lowerContent.indexOf(keyword, idx)) != -1) {
                         score++;
@@ -114,18 +114,18 @@ public class GitLabDataService {
         int totalScore = scores.values().stream()
                 .filter(s -> s > 0)
                 .sorted(Comparator.reverseOrder())
-                .limit(2)
+                .limit(3)
                 .mapToInt(Integer::intValue)
                 .sum();
 
         scores.entrySet().stream()
                 .filter(e -> e.getValue() > 0)
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(2)
+                .limit(3)
                 .forEach(e -> {
                     String url = e.getKey();
                     String content = pageCache.get(url);
-                    int limit = Math.min(2000, content.length());
+                    int limit = Math.min(4000, content.length());
                     context.append("--- Source: ").append(url).append(" ---\n");
                     context.append(content, 0, limit).append("\n\n");
                     usedSources.add(url);
