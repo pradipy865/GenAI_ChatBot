@@ -89,7 +89,7 @@ function App() {
       setIsLoading(true);
 
       try {
-        const { data } = await axios.post('/api/chat', {
+        const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/chat`, {
           message: text,
           sessionId,
         });
@@ -126,7 +126,7 @@ function App() {
 
   const clearChat = useCallback(async () => {
     try {
-      await axios.delete(`/api/session/${sessionId}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/session/${sessionId}`);
     } catch {
       // Best-effort clear
     }
@@ -142,7 +142,7 @@ function App() {
 
   const submitFeedback = useCallback(async (feedback) => {
     try {
-      await axios.post('/api/feedback', feedback);
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/feedback`, feedback);
     } catch (error) {
       console.error('Failed to submit feedback:', error);
     }
